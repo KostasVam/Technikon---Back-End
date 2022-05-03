@@ -36,7 +36,7 @@ public class Property implements Serializable {
     @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "OwnerId", referencedColumnName = "id")
     private Owner owner;
-    @OneToMany(mappedBy = "property", targetEntity = Repair.class, cascade = CascadeType.ALL)//, fetch = FetchType.LAZY
+    @OneToMany(mappedBy = "property", targetEntity = Repair.class)//, fetch = FetchType.LAZY , cascade = CascadeType.ALL
     private List<Repair> repairList;
 
     public Property(Long propertyID, String address, Integer yearOfConstruction, Owner owner, TypeOfProperty typeOfProperty, List<Repair> repairList) {

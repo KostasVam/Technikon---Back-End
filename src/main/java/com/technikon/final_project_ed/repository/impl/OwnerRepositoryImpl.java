@@ -2,17 +2,19 @@ package com.technikon.final_project_ed.repository.impl;
 
 import com.technikon.final_project_ed.model.Owner;
 import com.technikon.final_project_ed.repository.OwnerRepository;
+import java.io.Serializable;
 import java.util.Optional;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  *
- * @author iracl
+ * @author Kostas Vamvakousis
  */
 @Slf4j
 @NoArgsConstructor

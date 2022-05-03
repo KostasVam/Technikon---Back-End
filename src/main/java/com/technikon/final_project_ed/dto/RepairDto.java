@@ -1,37 +1,35 @@
 package com.technikon.final_project_ed.dto;
 
-import com.technikon.final_project_ed.model.Owner;
-import com.technikon.final_project_ed.model.Property;
 import com.technikon.final_project_ed.model.Repair;
 import com.technikon.final_project_ed.model.enumeration.StatusOfRepair;
 import com.technikon.final_project_ed.model.enumeration.TypeOfRepair;
+import com.technikon.final_project_ed.util.DateFormatterUtil;
 import java.math.BigDecimal;
-import java.util.Date;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  *
  * @author Kostas
  */
+@Data
+@NoArgsConstructor
 public class RepairDto {
 
     private long repairId;
-    private Date repairDate;
+    private String repairDate;
     private String shortDescription;
     private BigDecimal cost;
     private String detailedDescription;
-    private Property property;
-    private Owner owner;
     private TypeOfRepair typeOfRepair;
     private StatusOfRepair statusOfRepair;
 
     public RepairDto(Repair repair) {
         this.repairId = repair.getRepairId();
-        this.repairDate = repair.getRepairDate();
+        this.repairDate = new DateFormatterUtil().getFormattedDate(repair.getRepairDate());
         this.shortDescription = repair.getShortDescription();
         this.cost = repair.getCost();
         this.detailedDescription = repair.getDetailedDescription();
-        this.property = repair.getProperty();
-        this.owner = repair.getOwner();
         this.typeOfRepair = repair.getTypeOfRepair();
         this.statusOfRepair = repair.getStatusOfRepair();
     }
@@ -39,12 +37,10 @@ public class RepairDto {
     public Repair createRepair() {
         Repair repair = new Repair.Builder()
                 .setRepairId(repairId)
-                .setRepairDate(repairDate)
+                .setRepairDate(new DateFormatterUtil().getParsedDate(repairDate))
                 .setShortDescription(shortDescription)
                 .setCost(cost)
                 .setDetailedDescription(detailedDescription)
-                .setProperty(property)
-                .setOwner(owner)
                 .setTypeOfRepair(typeOfRepair)
                 .setStatusOfRepair(statusOfRepair)
                 .build();

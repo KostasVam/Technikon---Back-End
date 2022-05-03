@@ -52,4 +52,6 @@ public interface RepairService {
 
     List<RepairDto> findRepairsByDateRange(Date startDate, Date endDate);
 
+    RepairDto getDummyRepairDto();
+
 }

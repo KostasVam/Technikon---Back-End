@@ -4,6 +4,7 @@ import com.technikon.final_project_ed.model.Owner;
 import com.technikon.final_project_ed.model.Property;
 import com.technikon.final_project_ed.model.Repair;
 import com.technikon.final_project_ed.repository.PropertyRepository;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 import javax.enterprise.inject.Default;
@@ -15,12 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  *
- * @author iracl
+ * @author Kostas Vamvakousis
  */
 @Slf4j
 @NoArgsConstructor
 @Default
-public class PropertyRepositoryImpl extends CRUDRepositoryImpl<Property> implements PropertyRepository {
+public class PropertyRepositoryImpl extends CRUDRepositoryImpl<Property> implements PropertyRepository, Serializable {
 
     @PersistenceContext(unitName = "TechnikonPU")
     private EntityManager em;

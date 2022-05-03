@@ -10,6 +10,7 @@ import com.technikon.final_project_ed.repository.OwnerRepository;
 import com.technikon.final_project_ed.repository.PropertyRepository;
 import com.technikon.final_project_ed.repository.RepairRepository;
 import com.technikon.final_project_ed.service.PropertyService;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -26,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor
 @Default
-public class PropertyServiceImpl implements PropertyService {
+public class PropertyServiceImpl implements PropertyService, Serializable {
 
     @Inject
     private PropertyRepository propertyRepo;

@@ -1,9 +1,6 @@
 package com.technikon.final_project_ed.dto;
 
 import com.technikon.final_project_ed.model.Owner;
-import com.technikon.final_project_ed.model.Property;
-import com.technikon.final_project_ed.model.Repair;
-import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -24,8 +21,6 @@ public class OwnerDto {
     private String email;
     private String username;
     private String password;
-    private List<Property> properties;
-    private List<Repair> repairs;
 
     public OwnerDto(Owner owner) {
         this.ownerId = owner.getOwnerId();
@@ -37,8 +32,6 @@ public class OwnerDto {
         this.email = owner.getEmail();
         this.username = owner.getUsername();
         this.password = owner.getPassword();
-        this.properties = owner.getProperties();
-        this.repairs = owner.getRepairs();
     }
 
     public Owner createOwner() {
@@ -52,8 +45,6 @@ public class OwnerDto {
                 .setEmail(email)
                 .setUsername(username)
                 .setPassword(password)
-                .setProperties(properties)
-                .setRepairs(repairs)
                 .build();
         return owner;
     }

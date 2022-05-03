@@ -2,6 +2,7 @@ package com.technikon.final_project_ed.repository.impl;
 
 import com.technikon.final_project_ed.model.Repair;
 import com.technikon.final_project_ed.repository.RepairRepository;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.inject.Default;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @Default
-public class RepairRepositoryImpl extends CRUDRepositoryImpl<Repair> implements RepairRepository {
+public class RepairRepositoryImpl extends CRUDRepositoryImpl<Repair> implements RepairRepository, Serializable {
 
     @PersistenceContext(unitName = "TechnikonPU")
     private EntityManager em;

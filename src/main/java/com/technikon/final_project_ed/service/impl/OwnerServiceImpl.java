@@ -6,6 +6,7 @@ import com.technikon.final_project_ed.model.Property;
 import com.technikon.final_project_ed.repository.OwnerRepository;
 import com.technikon.final_project_ed.repository.PropertyRepository;
 import com.technikon.final_project_ed.service.OwnerService;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,8 +22,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author Kostas Vamvakousis
  */
 @Slf4j
-@NoArgsConstructor
-@Default
 public class OwnerServiceImpl implements OwnerService {
 
     @Inject
@@ -36,27 +35,24 @@ public class OwnerServiceImpl implements OwnerService {
      * owner already exists, otherwise it calls the save method from the
      * ownerRepo to add the given owner to the database.
      *
-     * @param owner
+     * @param vat
+     * @param email
      * @return
-     * @throws IllegalArgumentException
      */
     @Override
-    public OwnerDto create(Owner owner) {
+    public OwnerDto create(long vat, String email) {
         try {
-            if (isOwnerValid(owner)) {
+            if (isOwnerValid(vat, email)) {
+                Owner owner = new Owner.Builder().setVat(vat).setEmail(email).build();
                 ownerRepo.save(owner);
                 return new OwnerDto(owner);
             } else {
-                log.info("Owner with vat: {} is invalid", owner.getVat());
-                Owner ownerReturned = new Owner();
-                ownerReturned.setOwnerId(-1L);
-                return new OwnerDto(ownerReturned);
+                log.info("Owner with vat: {} is invalid", vat);
+                return getDummyOwnerDto();
             }
         } catch (NullPointerException e) {
             log.info("Invalid null owner");
-            Owner ownerReturned = new Owner();
-            ownerReturned.setOwnerId(-1L);
-            return new OwnerDto(ownerReturned);
+            return getDummyOwnerDto();
         }
     }
 
@@ -65,12 +61,13 @@ public class OwnerServiceImpl implements OwnerService {
      * the database.If both weren't found it return true otherwise it returns
      * false
      *
-     * @param owner
+     * @param vat
+     * @param email
      * @return boolean
      */
     @Override
-    public boolean isOwnerValid(Owner owner) throws IllegalArgumentException {
-        return isVatUnique(owner.getVat()) && isEmailUnique(owner.getEmail());
+    public boolean isOwnerValid(long vat, String email) {
+        return isVatUnique(vat) && isEmailUnique(email);
     }
 
     /**
@@ -82,13 +79,14 @@ public class OwnerServiceImpl implements OwnerService {
      * @return boolean
      */
     @Override
-    public boolean isVatUnique(long vat) throws IllegalArgumentException {
-        boolean uniqueVat = (ownerRepo.findByVat(vat).isEmpty());
+    public boolean isVatUnique(long vat) {
+        boolean uniqueVat = !ownerRepo.findByVat(vat).isPresent();
         if (uniqueVat) {
+            log.info("Given vat is unique.");
             return uniqueVat;
         } else {
             log.info("Not unique vat");
-            throw new IllegalArgumentException("Not unique vat");
+            return uniqueVat;
         }
     }
 
@@ -102,13 +100,14 @@ public class OwnerServiceImpl implements OwnerService {
      * @return boolean
      */
     @Override
-    public boolean isEmailUnique(String email) throws IllegalArgumentException {
-        boolean uniqueEmail = ownerRepo.findByEmail(email).isEmpty() && email != null;
+    public boolean isEmailUnique(String email) {
+        boolean uniqueEmail = !ownerRepo.findByEmail(email).isPresent() && email != null;
         if (uniqueEmail) {
+            log.info("Given email is unique.");
             return uniqueEmail;
         } else {
             log.info("Not unique email");
-            throw new IllegalArgumentException("Not unique email");
+            return uniqueEmail;
         }
     }
 
@@ -118,14 +117,15 @@ public class OwnerServiceImpl implements OwnerService {
      * create method will add the given owner if it doesn't already exist in the
      * database
      *
-     * @param ownerlist
+     * @param vatlist
+     * @param emailList
      * @return
      */
     @Override
-    public List<OwnerDto> create(List<Owner> ownerlist) {
+    public List<OwnerDto> create(List<Long> vatlist, List<String> emailList) {
         List<OwnerDto> ownersDtoList = new ArrayList<>();
-        for (Owner owner : ownerlist) {
-            ownersDtoList.add(create(owner));
+        for (int i = 0; i <= vatlist.size(); i++) {
+            ownersDtoList.add(create(vatlist.get(i), emailList.get(i)));
         }
         return ownersDtoList;
     }
@@ -146,9 +146,7 @@ public class OwnerServiceImpl implements OwnerService {
             return new OwnerDto(ownerFound.get());
         }
         log.info("Owner with id {} wasn't found", id);
-        Owner owner = new Owner();
-        owner.setOwnerId(-1L);
-        return new OwnerDto(owner);
+        return getDummyOwnerDto();
     }
 
     /**
@@ -175,13 +173,13 @@ public class OwnerServiceImpl implements OwnerService {
 
     @Override
     public OwnerDto searchByVat(long vat) {
+        create(vat, "random");
         Optional<Owner> ownerFound = ownerRepo.findByVat(vat);
         if (ownerFound.isPresent()) {
             return new OwnerDto(ownerFound.get());
         }
-        Owner owner = new Owner();
-        owner.setOwnerId(-1L);
-        return new OwnerDto(owner);
+        log.info("Owner with vat {} wasn't found.", vat);
+        return getDummyOwnerDto();
     }
 
     /**
@@ -224,6 +222,87 @@ public class OwnerServiceImpl implements OwnerService {
      * address with the given string
      *
      * @param id
+     * @param vat
+     * @return
+     */
+    @Override
+    public OwnerDto updateVat(long id, long vat) {
+        try {
+            Optional<Owner> ownerFound = ownerRepo.findById(id);
+            if (ownerFound.isPresent() && isVatUnique(vat)) {
+                ownerFound.get().setVat(vat);
+                ownerRepo.update(id, ownerFound.get());
+                return new OwnerDto(ownerFound.get());
+            } else {
+                log.info("Invalid owner id or vat.");
+                return getDummyOwnerDto();
+            }
+        } catch (NullPointerException ex) {
+            log.info("Invalid null owner.");
+            return getDummyOwnerDto();
+        }
+    }
+
+    /**
+     * updateAddress checks if the given owner corresponds to an existing owner
+     * in the database.if that owner is found then the updateAddress sets it's
+     * address with the given string
+     *
+     * @param id
+     * @param newName
+     * @return
+     */
+    @Override
+    public OwnerDto updateName(long id, String newName) {
+        try {
+            Optional<Owner> ownerFound = ownerRepo.findById(id);
+            if (ownerFound.isPresent() && newName != null) {
+                ownerFound.get().setName(newName);
+                ownerRepo.update(id, ownerFound.get());
+                return new OwnerDto(ownerFound.get());
+            } else {
+                log.info("Invalid owner id or name.");
+                return getDummyOwnerDto();
+            }
+        } catch (NullPointerException ex) {
+            log.info("Invalid null owner.");
+            return getDummyOwnerDto();
+        }
+    }
+
+    /**
+     * updateAddress checks if the given owner corresponds to an existing owner
+     * in the database.if that owner is found then the updateAddress sets it's
+     * address with the given string
+     *
+     * @param id
+     * @param newSurname
+     * @return
+     */
+    @Override
+    public OwnerDto updateSurname(long id, String newSurname) {
+        try {
+            Optional<Owner> ownerFound = ownerRepo.findById(id);
+            if (ownerFound.isPresent() && newSurname != null) {
+                ownerFound.get().setSurname(newSurname);
+                ownerRepo.update(id, ownerFound.get());
+                return new OwnerDto(ownerFound.get());
+            } else {
+                log.info("Invalid owner id or surname.");
+                return getDummyOwnerDto();
+            }
+        } catch (NullPointerException ex) {
+            log.info("Invalid null owner.");
+            return getDummyOwnerDto();
+        }
+    }
+
+    /**
+     * updateAddress checks if the given owner corresponds to an existing owner
+     * in the database.if that owner is found then the updateAddress sets it's
+     * address with the given string
+     *
+     * @param id
      * @param address
      * @return
      */
@@ -237,15 +316,38 @@ public class OwnerServiceImpl implements OwnerService {
                 return new OwnerDto(ownerFound.get());
             } else {
                 log.info("Invalid address or owner.");
-                Owner ownerReturned = new Owner();
-                ownerReturned.setOwnerId(-1L);
-                return new OwnerDto(ownerReturned);
+                return getDummyOwnerDto();
             }
         } catch (NullPointerException ex) {
             log.info("Invalid null owner.");
-            Owner ownerReturned = new Owner();
-            ownerReturned.setOwnerId(-1L);
-            return new OwnerDto(ownerReturned);
+            return getDummyOwnerDto();
+        }
+    }
+
+    /**
+     * updateEmail checks if the given owner corresponds to an existing owner in
+     * the database.if that owner is found and the given email doesn't belong to
+     * another owner then the updateEmail sets it's email with the given string
+     *
+     * @param id
+     * @param phoneNumber
+     * @return
+     */
+    @Override
+    public OwnerDto updatePhoneNumber(long id, String phoneNumber) {
+        try {
+            Optional<Owner> ownerFound = ownerRepo.findById(id);
+            if (ownerFound.isPresent() && phoneNumber != null) {
+                ownerFound.get().setPhoneNumber(phoneNumber);
+                ownerRepo.update(id, ownerFound.get());
+                return new OwnerDto(ownerFound.get());
+            } else {
+                log.info("Invalid email or owner.");
+                return getDummyOwnerDto();
+            }
+        } catch (NullPointerException ex) {
+            log.info("Invalid null owner.");
+            return getDummyOwnerDto();
         }
     }
 
@@ -268,15 +370,38 @@ public class OwnerServiceImpl implements OwnerService {
                 return new OwnerDto(ownerFound.get());
             } else {
                 log.info("Invalid email or owner.");
-                Owner ownerReturned = new Owner();
-                ownerReturned.setOwnerId(-1L);
-                return new OwnerDto(ownerReturned);
+                return getDummyOwnerDto();
             }
         } catch (NullPointerException ex) {
             log.info("Invalid null owner.");
-            Owner ownerReturned = new Owner();
-            ownerReturned.setOwnerId(-1L);
-            return new OwnerDto(ownerReturned);
+            return getDummyOwnerDto();
+        }
+    }
+
+    /**
+     * updatePassword checks if the given owner corresponds to an existing owner
+     * in the database.if that owner is found then the updatePassword sets it's
+     * password with the given string
+     *
+     * @param id
+     * @param username
+     * @return
+     */
+    @Override
+    public OwnerDto updateUsername(long id, String username) {
+        try {
+            Optional<Owner> ownerFound = ownerRepo.findById(id);
+            if (ownerFound.isPresent() && username != null) {
+                ownerFound.get().setUsername(username);
+                ownerRepo.update(id, ownerFound.get());
+                return new OwnerDto(ownerFound.get());
+            } else {
+                log.info("Invalid username or owner.");
+                return getDummyOwnerDto();
+            }
+        } catch (NullPointerException ex) {
+            log.info("Invalid null owner.");
+            return getDummyOwnerDto();
         }
     }
 
@@ -299,15 +424,11 @@ public class OwnerServiceImpl implements OwnerService {
                 return new OwnerDto(ownerFound.get());
             } else {
                 log.info("Invalid password or owner.");
-                Owner ownerReturned = new Owner();
-                ownerReturned.setOwnerId(-1L);
-                return new OwnerDto(ownerReturned);
+                return getDummyOwnerDto();
             }
         } catch (NullPointerException ex) {
             log.info("Invalid null owner.");
-            Owner ownerReturned = new Owner();
-            ownerReturned.setOwnerId(-1L);
-            return new OwnerDto(ownerReturned);
+            return getDummyOwnerDto();
         }
     }
 
@@ -322,12 +443,14 @@ public class OwnerServiceImpl implements OwnerService {
     public void delete(long id) {
         Optional<Owner> ownerFound = ownerRepo.findById(id);
         if (ownerFound.isPresent()) {
-            propertyRepo.findByVat(ownerFound.get())
-                    .stream()
-                    .forEach((Property p)
-                            -> propertyRepo.delete(p.getId())
-                    );
-            ownerRepo.delete(ownerFound.get().getOwnerId());
+            List<Property> propertyList = propertyRepo.findByVat(ownerFound.get());
+            if (!propertyList.isEmpty()) {
+                propertyList.stream()
+                        .forEach((Property p)
+                                -> propertyRepo.delete(p.getId())
+                        );
+            }
+            ownerRepo.delete(id);
 
         } else {
             log.info("Owner doesn't exist.");
@@ -357,5 +480,10 @@ public class OwnerServiceImpl implements OwnerService {
         } catch (NullPointerException e) {
             log.info("Database hasn't any owners.");
         }
+    }
+
+    @Override
+    public OwnerDto getDummyOwnerDto() {
+        return new OwnerDto(new Owner.Builder().setId(-1L).build());
     }
 }

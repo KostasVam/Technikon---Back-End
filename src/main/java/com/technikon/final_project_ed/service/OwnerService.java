@@ -13,9 +13,9 @@ import java.util.List;
  */
 public interface OwnerService {
 
-    OwnerDto create(Owner owner);
+    OwnerDto create(long vat, String email);
 
-    List<OwnerDto> create(List<Owner> list);
+    List<OwnerDto> create(List<Long> vatlist, List<String> emailList);
 
     OwnerDto searchById(long id);
 
@@ -25,7 +25,7 @@ public interface OwnerService {
 
     void deleteAll();
 
-    boolean isOwnerValid(Owner owner);
+    boolean isOwnerValid(long vat, String email);
 
     boolean isVatUnique(long vat);
 
@@ -37,10 +37,22 @@ public interface OwnerService {
 
     void printAllOwners();
 
+    OwnerDto updateVat(long id, long vat);
+
+    OwnerDto updateName(long id, String newName);
+
+    OwnerDto updateSurname(long id, String newSurname);
+
     OwnerDto updateAddress(long id, String address);
+
+    OwnerDto updatePhoneNumber(long id, String phoneNumber);
 
     OwnerDto updateEmail(long id, String email);
 
+    OwnerDto updateUsername(long id, String username);
+
     OwnerDto updatePassword(long id, String password);
+
+    OwnerDto getDummyOwnerDto();
 
 }

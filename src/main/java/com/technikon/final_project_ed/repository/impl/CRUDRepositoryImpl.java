@@ -1,6 +1,7 @@
 package com.technikon.final_project_ed.repository.impl;
 
 import com.technikon.final_project_ed.repository.CRUDRepository;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Resource;
@@ -22,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
  * @param <T>
  */
 @Slf4j
-public abstract class CRUDRepositoryImpl<T> implements CRUDRepository<T> {
+public abstract class CRUDRepositoryImpl<T> implements CRUDRepository<T>, Serializable {
 
     @PersistenceContext(unitName = "TechnikonPU")
     private EntityManager em;
@@ -37,8 +38,8 @@ public abstract class CRUDRepositoryImpl<T> implements CRUDRepository<T> {
             em.persist(t);
             userTransaction.commit();
             return Optional.of(t);
-        } catch (IllegalStateException | SecurityException | HeuristicMixedException | HeuristicRollbackException | NotSupportedException | RollbackException | SystemException e) {
-            log.info(e.getMessage());
+        } catch (Exception e) {
+            log.error(e.toString());
         }
         return Optional.empty();
     }
@@ -95,8 +96,8 @@ public abstract class CRUDRepositoryImpl<T> implements CRUDRepository<T> {
                 userTransaction.begin();
                 em.remove(persistentInstance);
                 userTransaction.commit();
-            } catch (IllegalStateException | SecurityException | HeuristicMixedException | HeuristicRollbackException | NotSupportedException | RollbackException | SystemException e) {
-                log.info(e.getMessage());
+            } catch (Exception e) {
+                log.error(e.toString());
                 return false;
             }
             return true;

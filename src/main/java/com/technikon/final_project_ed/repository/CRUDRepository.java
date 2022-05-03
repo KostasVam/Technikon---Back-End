@@ -5,7 +5,7 @@ import java.util.Optional;
 
 /**
  *
- * @author iracl
+ * @author Kostas Vamvakousis
  */
 public interface CRUDRepository<T> {
 

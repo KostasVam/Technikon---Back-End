@@ -18,6 +18,7 @@ import com.technikon.final_project_ed.repository.PropertyRepository;
 import com.technikon.final_project_ed.repository.RepairRepository;
 import com.technikon.final_project_ed.repository.OwnerRepository;
 import com.technikon.final_project_ed.util.DateFormatterUtil;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 import javax.enterprise.inject.Default;
@@ -29,7 +30,7 @@ import javax.enterprise.inject.Default;
 @Slf4j
 @NoArgsConstructor
 @Default
-public class RepairServiceImpl implements RepairService {
+public class RepairServiceImpl implements RepairService, Serializable {
 
     @Inject
     private RepairRepository repairRepo;

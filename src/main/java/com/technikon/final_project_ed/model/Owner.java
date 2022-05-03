@@ -5,7 +5,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,25 +28,25 @@ public class Owner implements Serializable {
     private Long ownerId;
     @Column(name = "VAT", nullable = false, unique = true, length = 20)
     private Long vat;
-    @Column(name = "name", nullable = false, length = 45)
+    @Column(name = "name", length = 45)
     private String name;
-    @Column(name = "surname", nullable = false, length = 45)
+    @Column(name = "surname", length = 45)
     private String surname;
-    @Column(name = "address", nullable = false, length = 120)
+    @Column(name = "address", length = 120)
     private String address;
-    @Column(name = "phoneNumber", nullable = false, length = 15)
+    @Column(name = "phoneNumber", length = 15)
     private String phoneNumber;
     @Column(name = "email", nullable = false, length = 50, unique = true)
     private String email;
-    @Column(name = "username", nullable = false, length = 45)
+    @Column(name = "username", length = 45)
     private String username;
-    @Column(name = "password", nullable = false, length = 45)
+    @Column(name = "password", length = 45)
     private String password;
 
-    @OneToMany(mappedBy = "owner", targetEntity = Property.class, cascade = CascadeType.ALL)//, fetch = FetchType.EAGER
+    @OneToMany(mappedBy = "owner", targetEntity = Property.class)//, fetch = FetchType.EAGER, cascade = CascadeType.ALL
     private List<Property> properties;
 
-    @OneToMany(mappedBy = "owner", targetEntity = Repair.class, cascade = CascadeType.ALL)//, fetch = FetchType.LAZY
+    @OneToMany(mappedBy = "owner", targetEntity = Repair.class)//, fetch = FetchType.LAZY, cascade = CascadeType.ALL
     private List<Repair> repairs;
 
     public Owner(long vat, String name, String surname, String address, String phoneNumber, String email, String username, String password, List<Property> properties, List<Repair> repairs) {
