@@ -1,7 +1,6 @@
 package com.technikon.final_project_ed.service;
 
 import com.technikon.final_project_ed.dto.OwnerDto;
-import com.technikon.final_project_ed.model.Owner;
 import java.util.List;
 
 /**
@@ -13,9 +12,9 @@ import java.util.List;
  */
 public interface OwnerService {
 
-    OwnerDto create(long vat, String email);
+    OwnerDto create(OwnerDto ownerDto);
 
-    List<OwnerDto> create(List<Long> vatlist, List<String> emailList);
+    List<OwnerDto> create(List<OwnerDto> ownerDtoList);
 
     OwnerDto searchById(long id);
 
@@ -25,34 +24,10 @@ public interface OwnerService {
 
     void deleteAll();
 
-    boolean isOwnerValid(long vat, String email);
-
-    boolean isVatUnique(long vat);
-
-    boolean isEmailUnique(String email);
-
     OwnerDto searchByVat(long vat);
 
     OwnerDto searchByEmail(String email);
 
-    void printAllOwners();
-
-    OwnerDto updateVat(long id, long vat);
-
-    OwnerDto updateName(long id, String newName);
-
-    OwnerDto updateSurname(long id, String newSurname);
-
-    OwnerDto updateAddress(long id, String address);
-
-    OwnerDto updatePhoneNumber(long id, String phoneNumber);
-
-    OwnerDto updateEmail(long id, String email);
-
-    OwnerDto updateUsername(long id, String username);
-
-    OwnerDto updatePassword(long id, String password);
-
-    OwnerDto getDummyOwnerDto();
+    OwnerDto update(OwnerDto ownerDto);
 
 }
