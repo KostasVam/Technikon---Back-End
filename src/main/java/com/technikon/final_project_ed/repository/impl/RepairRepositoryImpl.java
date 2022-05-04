@@ -34,7 +34,7 @@ public class RepairRepositoryImpl extends CRUDRepositoryImpl<Repair> implements 
     }
 
     @Override
-    public void copyValues(Repair tSource, Repair tTarget) {
+    public void copyValues(Repair tTarget, Repair tSource) {
         tTarget.setCost(tSource.getCost());
         tTarget.setDetailedDescription(tSource.getDetailedDescription());
         tTarget.setOwner(tSource.getOwner());
