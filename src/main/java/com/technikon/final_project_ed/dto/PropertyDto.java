@@ -18,7 +18,6 @@ public class PropertyDto {
     private String address;
     private Integer yearOfConstruction;
     private TypeOfProperty typeOfProperty;
-    private Long ownerVat;
 
     public PropertyDto(Property property) {
         this.id = property.getId();
@@ -26,7 +25,6 @@ public class PropertyDto {
         this.address = property.getAddress();
         this.yearOfConstruction = property.getYearOfConstruction();
         this.typeOfProperty = property.getTypeOfProperty();
-        this.ownerVat = property.getOwnerVat();
     }
 
     public Property createProperty() {
@@ -36,7 +34,6 @@ public class PropertyDto {
                 .setAddress(address)
                 .setYearOfConstruction(yearOfConstruction)
                 .setTypeOfProperty(typeOfProperty)
-                .setOwnerVat(ownerVat)
                 .build();
         return property;
     }
