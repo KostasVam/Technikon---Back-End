@@ -18,9 +18,9 @@ import java.util.List;
  */
 public interface RepairService {
 
-    RepairDto create(Repair repair);
+    RepairDto create(RepairDto repairDto);
 
-    List<RepairDto> create(List<Repair> list);
+    List<RepairDto> create(List<RepairDto> repairDtoList);
 
     RepairDto searchById(long id);
 
@@ -30,28 +30,12 @@ public interface RepairService {
 
     void deleteAll();
 
-    RepairDto updateDate(long id, Date repairDate);
-
-    RepairDto updateShortDescription(long id, String shortDescription);
-
-    RepairDto updateTypeOfRepair(long id, TypeOfRepair typeOfRepair);
-
-    RepairDto updateDetailedDescription(long id, String detailedDescription);
-
-    RepairDto updateCost(long id, BigDecimal cost);
+    RepairDto update(RepairDto repairDto);
 
     RepairDto updatePropertiesId(long id, long propertyId);
-
-    boolean isPropertyValid(Property property, Owner owner);
-
-    boolean isOwnerValid(long vat);
-
-    boolean isRepairValid(Repair repair);
 
     List<RepairDto> findRepairsByDate(Date date);
 
     List<RepairDto> findRepairsByDateRange(Date startDate, Date endDate);
-
-    RepairDto getDummyRepairDto();
 
 }
