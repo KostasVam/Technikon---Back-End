@@ -2,13 +2,11 @@ package com.technikon.final_project_ed.repository.impl;
 
 import com.technikon.final_project_ed.model.Owner;
 import com.technikon.final_project_ed.repository.OwnerRepository;
-import java.io.Serializable;
 import java.util.Optional;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,8 +33,18 @@ public class OwnerRepositoryImpl extends CRUDRepositoryImpl<Owner> implements Ow
     }
 
     @Override
-    public void copyValues(Owner tSource, Owner tTarget) {
+    public void copyValues(Owner tTarget, Owner tSource) {
         tTarget.setName(tSource.getName());
+        tTarget.setAddress(tSource.getAddress());
+        tTarget.setEmail(tSource.getEmail());
+        tTarget.setOwnerId(tSource.getOwnerId());
+        tTarget.setPassword(tSource.getPassword());
+        tTarget.setPhoneNumber(tSource.getPhoneNumber());
+        tTarget.setProperties(tSource.getProperties());
+        tTarget.setRepairs(tSource.getRepairs());
+        tTarget.setSurname(tSource.getSurname());
+        tTarget.setUsername(tSource.getUsername());
+        tTarget.setVat(tSource.getVat());
     }
 
     @Override
