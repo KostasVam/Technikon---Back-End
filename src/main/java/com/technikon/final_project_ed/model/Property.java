@@ -30,8 +30,6 @@ public class Property implements Serializable {
     @Column(name = "Type_Of_Property")
     @Enumerated(value = EnumType.STRING)
     private TypeOfProperty typeOfProperty;
-    @Column(name = "owner ")
-    private Long ownerVat;
 
     @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "OwnerId", referencedColumnName = "id")
@@ -46,7 +44,6 @@ public class Property implements Serializable {
         this.owner = owner;
         this.typeOfProperty = typeOfProperty;
         this.repairList = repairList;
-        this.ownerVat = owner.getVat();
     }
 
     private Property(Builder builder) {
@@ -57,7 +54,6 @@ public class Property implements Serializable {
         this.owner = builder.owner;
         this.typeOfProperty = builder.typeOfProperty;
         this.repairList = builder.repairList;
-        this.ownerVat = builder.owner.getVat();
     }
 
     public static class Builder {
@@ -69,7 +65,6 @@ public class Property implements Serializable {
         private Owner owner;
         private TypeOfProperty typeOfProperty;
         private List<Repair> repairList;
-        private long ownerVat;
 
         public Builder() {
         }
@@ -106,11 +101,6 @@ public class Property implements Serializable {
 
         public Builder setRepairList(List<Repair> repairList) {
             this.repairList = repairList;
-            return this;
-        }
-
-        public Builder setOwnerVat(long ownerVat) {
-            this.ownerVat = ownerVat;
             return this;
         }
 
