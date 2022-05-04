@@ -47,8 +47,7 @@ public class RepairServiceImpl implements RepairService, Serializable {
      * @param repair
      * @return boolean
      */
-    @Override
-    public boolean isRepairValid(Repair repair) {
+    private boolean isRepairValid(Repair repair) {
         boolean ownerValid = isOwnerValid(repair.getOwner().getVat());
         boolean propertyOwned = isPropertyValid(repair.getProperty(), repair.getOwner());
         return ownerValid && propertyOwned;
@@ -63,8 +62,7 @@ public class RepairServiceImpl implements RepairService, Serializable {
      * @param vat
      * @return boolean
      */
-    @Override
-    public boolean isOwnerValid(long vat) {
+    private boolean isOwnerValid(long vat) {
         return ownerRepo.findByVat(vat).isPresent();
     }
 
@@ -77,10 +75,9 @@ public class RepairServiceImpl implements RepairService, Serializable {
      * @param property
      * @return boolean
      */
-    @Override
-    public boolean isPropertyValid(Property property, Owner owner) {
+    private boolean isPropertyValid(Property property, Owner owner) {
         for (Property propertyOwner : owner.getProperties()) {
-            if (propertyOwner.getId() == propertyOwner.getId()) {
+            if (propertyOwner.getId() == property.getId()) {
                 return true;
             }
         }
@@ -91,21 +88,22 @@ public class RepairServiceImpl implements RepairService, Serializable {
      * create creates a repair in the database.if it already exists in throws an
      * exception
      *
-     * @param repair
+     * @param repairDto
      * @return
      */
     @Override
-    public RepairDto create(Repair repair) {
+    public RepairDto create(RepairDto repairDto) {
         try {
-            if (isRepairValid(repair)) {
-                repairRepo.save(repair);
-                return new RepairDto(repair);
-            } else {
-                log.info("Repair with id: {} is invalid", repair.getRepairId());
-                return getDummyRepairDto();
-            }
+//            if (isRepairValid(repair)) {
+//                repairRepo.save(repair);
+//                return new RepairDto(repair);
+//            } else {
+//                log.info("Repair with id: {} is invalid", repair.getRepairId());
+//                return getDummyRepairDto();
+//            }
+            return new RepairDto(repairRepo.save(repairDto.createRepair()).get());
         } catch (NullPointerException ex) {
-            log.info("Owner or property is null");
+            log.info("Invalid null repair");
             return getDummyRepairDto();
         }
     }
@@ -114,16 +112,16 @@ public class RepairServiceImpl implements RepairService, Serializable {
      * create iterates the given list of repairs and and calls the create method
      * for each repair
      *
-     * @param repairList
+     * @param RepairDtoList
      * @return
      */
     @Override
-    public List<RepairDto> create(List<Repair> repairList) {
-        List<RepairDto> repairsDtoList = new ArrayList<>();
-        for (Repair repair : repairList) {
-            repairsDtoList.add(create(repair));
+    public List<RepairDto> create(List<RepairDto> RepairDtoList) {
+        List<RepairDto> repairsCreatedList = new ArrayList<>();
+        for (RepairDto repairDto : RepairDtoList) {
+            repairsCreatedList.add(create(repairDto));
         }
-        return repairsDtoList;
+        return repairsCreatedList;
     }
 
     /**
@@ -138,7 +136,7 @@ public class RepairServiceImpl implements RepairService, Serializable {
         if (repairFound.isPresent()) {
             return new RepairDto(repairFound.get());
         }
-        log.info("Repair with id: {} is invalid", repairFound.get().getRepairId());
+        log.info("Repair with id: {} is invalid", id);
         return getDummyRepairDto();
     }
 
@@ -203,107 +201,37 @@ public class RepairServiceImpl implements RepairService, Serializable {
         }
     }
 
-    /**
-     * updateDate updates the date of a specific repair in the database if it
-     * exists
-     *
-     * @param id
-     * @param repairDate
-     * @return
-     */
     @Override
-    public RepairDto updateDate(long id, Date repairDate) {
-        Optional<Repair> repairFound = repairRepo.findById(id);
-        if (repairFound.isPresent() && repairDate != null) {
-            repairFound.get().setRepairDate(repairDate);
-            repairRepo.save(repairFound.get());
-            return new RepairDto(repairFound.get());
-        } else {
-            log.info("Update of repair with id {} failed. Invalid id or date.", repairFound.get().getRepairId());
-            return getDummyRepairDto();
-        }
-    }
-
-    /**
-     * updateShortDescription updates the short description of a specific repair
-     * in the database if it exists
-     *
-     * @param id
-     * @param shortDescription
-     * @return
-     */
-    @Override
-    public RepairDto updateShortDescription(long id, String shortDescription) {
-        Optional<Repair> repairFound = repairRepo.findById(id);
-        if (repairFound.isPresent() && shortDescription != null) {
-            repairFound.get().setShortDescription(shortDescription);
-            repairRepo.save(repairFound.get());
-            return new RepairDto(repairFound.get());
-        } else {
-            log.info("Update of repair with id {} failed. Invalid id or short description.", repairFound.get().getRepairId());
-            return getDummyRepairDto();
-        }
-    }
-
-    /**
-     * updateTypeOfRepair updates the type of a specific repair in the database
-     * if it exists
-     *
-     * @param id
-     * @param typeOfRepair
-     * @return
-     */
-    @Override
-    public RepairDto updateTypeOfRepair(long id, TypeOfRepair typeOfRepair) {
-        Optional<Repair> repairFound = repairRepo.findById(id);
-        if (repairFound.isPresent() && typeOfRepair != null) {
-            repairFound.get().setTypeOfRepair(typeOfRepair);
-            repairRepo.save(repairFound.get());
-            return new RepairDto(repairFound.get());
-        } else {
-            log.info("Update of repair with id {} failed. Invalid id or type of repair.", repairFound.get().getRepairId());
-            return getDummyRepairDto();
-        }
-    }
-
-    /**
-     * updateDetailedDescription updates detailed short description of a
-     * specific repair in the database if it exists
-     *
-     * @param id
-     * @param detailedDescription
-     * @return
-     */
-    @Override
-    public RepairDto updateDetailedDescription(long id, String detailedDescription) {
-        Optional<Repair> repairFound = repairRepo.findById(id);
-        if (repairFound.isPresent() && detailedDescription != null) {
-            repairFound.get().setDetailedDescription(detailedDescription);
-            repairRepo.save(repairFound.get());
-            return new RepairDto(repairFound.get());
-        } else {
-            log.info("Update of repair with id {} failed. Invalid id or detailed description.", repairFound.get().getRepairId());
-            return getDummyRepairDto();
-        }
-    }
-
-    /**
-     * updateCost updates the cost of a specific repair in the database if it
-     * exists
-     *
-     * @param id
-     * @param cost
-     * @return
-     */
-    @Override
-    public RepairDto updateCost(long id, BigDecimal cost) {
-        Optional<Repair> repairFound = repairRepo.findById(id);
-        if (repairFound.isPresent() && cost != null) {
-            repairFound.get().setCost(cost);
-            repairRepo.save(repairFound.get());
-            return new RepairDto(repairFound.get());
-        } else {
-            log.info("Update of repair with id {} failed. Invalid id or cost.", repairFound.get().getRepairId());
+    public RepairDto update(RepairDto repairDto) {
+        try {
+            Optional<Repair> repairFound = repairRepo.findById(repairDto.getRepairId());
+            if (repairFound.isPresent()) {
+                log.info("Repair was found");
+                if (repairDto.getRepairDate() != null) {
+                    repairFound.get().setRepairDate(new DateFormatterUtil().getParsedDate(repairDto.getRepairDate()));
+                }
+                if (repairDto.getShortDescription() != null) {
+                    repairFound.get().setShortDescription(repairDto.getShortDescription());
+                }
+                if (repairDto.getCost() != null) {
+                    repairFound.get().setCost(repairDto.getCost());
+                }
+                if (repairDto.getRepairDate() != null) {
+                    repairFound.get().setDetailedDescription(repairDto.getDetailedDescription());
+                }
+                if (repairDto.getRepairDate() != null) {
+                    repairFound.get().setTypeOfRepair(repairDto.getTypeOfRepair());
+                }
+                if (repairDto.getRepairDate() != null) {
+                    repairFound.get().setStatusOfRepair(repairDto.getStatusOfRepair());
+                }
+                return new RepairDto(repairRepo.update(repairFound.get().getRepairId(), repairFound.get()).get());
+            } else {
+                log.info("Repair wasn't found.");
+                return getDummyRepairDto();
+            }
+        } catch (NullPointerException ex) {
+            log.info("Invalid null repair.");
             return getDummyRepairDto();
         }
     }
@@ -352,7 +280,7 @@ public class RepairServiceImpl implements RepairService, Serializable {
                 List<Repair> repairsFound = repairRepo.findByDate(date);
                 if (!repairsFound.isEmpty()) {
                     for (Repair repair : repairsFound) {
-                        repairsDtoList.add(create(repair));
+                        repairsDtoList.add(create(new RepairDto(repair)));
                     }
                 } else {
                     log.info("No repairs exist at the given date.");
@@ -385,7 +313,7 @@ public class RepairServiceImpl implements RepairService, Serializable {
                 List<Repair> repairsFound = repairRepo.findByRangeOfDates(startDate, endDate);
                 if (!repairsFound.isEmpty()) {
                     for (Repair repair : repairsFound) {
-                        repairsDtoList.add(create(repair));
+                        repairsDtoList.add(create(new RepairDto(repair)));
                     }
                 } else {
                     log.info("No repairs exist in the given dates' range.");
@@ -399,7 +327,7 @@ public class RepairServiceImpl implements RepairService, Serializable {
         return repairsDtoList;
     }
 
-    public RepairDto getDummyRepairDto() {
+    private RepairDto getDummyRepairDto() {
         return new RepairDto(new Repair.Builder().setRepairId(-1L).build());
     }
 }
