@@ -7,11 +7,6 @@ import java.util.Optional;
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import lombok.extern.slf4j.Slf4j;
 
@@ -70,13 +65,21 @@ public abstract class CRUDRepositoryImpl<T> implements CRUDRepository<T>, Serial
 //??
     @Override
     public Optional<T> update(long id, T t) {
-        Optional<T> tOpt = findById(id);
-        if (tOpt.isEmpty()) {
+        try {
+            userTransaction.begin();
+            T t0 = em.find(getClassType(), id);
+            if (t0 == null) {
+                userTransaction.commit();
+                return Optional.empty();
+            }
+            copyValues(t0, t);
+            em.persist(t0);
+            userTransaction.commit();
+            return Optional.of(t0);
+        } catch (Exception e) {
+            log.info(e.toString());
             return Optional.empty();
         }
-        T tObj = tOpt.get();
-        copyValues(t, tObj);
-        return save(tObj);
     }
 
     public abstract void copyValues(T tSource, T tTarget);
@@ -91,10 +94,9 @@ public abstract class CRUDRepositoryImpl<T> implements CRUDRepository<T>, Serial
     public boolean delete(long id) {
         T persistentInstance = em.find(getClassType(), id);
         if (persistentInstance != null) {
-
             try {
                 userTransaction.begin();
-                em.remove(persistentInstance);
+                em.remove(em.contains(persistentInstance) ? persistentInstance : em.merge(persistentInstance));
                 userTransaction.commit();
             } catch (Exception e) {
                 log.error(e.toString());
