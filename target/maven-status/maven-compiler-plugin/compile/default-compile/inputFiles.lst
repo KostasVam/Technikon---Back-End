@@ -1,3 +1,4 @@
+C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\resources\PropertyResource.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\service\OwnerService.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\service\impl\RepairServiceImpl.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\repository\impl\PropertyRepositoryImpl.java
@@ -5,7 +6,6 @@ C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Pr
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\resources\OwnerResource.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\model\Repair.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\repository\impl\RepairRepositoryImpl.java
-C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\usecases\OwnerUseCase.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\dto\RepairDto.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\repository\impl\CRUDRepositoryImpl.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\service\impl\OwnerServiceImpl.java
@@ -17,11 +17,14 @@ C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Pr
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\model\Property.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\model\enumeration\TypeOfRepair.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\model\Owner.java
+C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\security\AuthenticationFilter.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\service\impl\PropertyServiceImpl.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\repository\CRUDRepository.java
+C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\security\CorsFilter.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\dto\PropertyDto.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\util\DateFormatterUtil.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\JAXRSConfiguration.java
+C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\resources\RepairResource.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\model\enumeration\StatusOfRepair.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\repository\OwnerRepository.java
 C:\Users\Mauros\Documents\NetBeansProjects\European-Bootcamp-Final_Individual_Project\src\main\java\com\technikon\final_project_ed\service\RepairService.java
