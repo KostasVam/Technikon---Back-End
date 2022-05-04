@@ -19,9 +19,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Kostas Vamvakousis
  */
 @Slf4j
-@NoArgsConstructor
-@Default
-public class PropertyRepositoryImpl extends CRUDRepositoryImpl<Property> implements PropertyRepository, Serializable {
+public class PropertyRepositoryImpl extends CRUDRepositoryImpl<Property> implements PropertyRepository {
 
     @PersistenceContext(unitName = "TechnikonPU")
     private EntityManager em;
@@ -37,10 +35,9 @@ public class PropertyRepositoryImpl extends CRUDRepositoryImpl<Property> impleme
     }
 
     @Override
-    public void copyValues(Property tSource, Property tTarget) {
+    public void copyValues(Property tTarget, Property tSource) {
         tTarget.setAddress(tSource.getAddress());
         tTarget.setOwner(tSource.getOwner());
-        tTarget.setOwnerVat(tSource.getOwnerVat());
         tTarget.setPropertyID(tSource.getPropertyID());
         tTarget.setTypeOfProperty(tSource.getTypeOfProperty());
         tTarget.setYearOfConstruction(tSource.getYearOfConstruction());
