@@ -2,8 +2,6 @@ package com.technikon.final_project_ed.service;
 
 import com.technikon.final_project_ed.dto.PropertyDto;
 import com.technikon.final_project_ed.dto.RepairDto;
-import com.technikon.final_project_ed.model.Owner;
-import com.technikon.final_project_ed.model.Property;
 import com.technikon.final_project_ed.model.enumeration.TypeOfProperty;
 
 import java.util.List;
@@ -13,38 +11,28 @@ import java.util.List;
  * for the model class Property and declares any additional methods that must be
  * implemented from an PropertyServiceImplementation.
  *
- * @author Nikolaos Mpifsas
+ * @author Kostas Vamvakousis
  */
 public interface PropertyService {
 
-    PropertyDto create(Property property);
+    PropertyDto create(PropertyDto propertyDto);
 
-    List<PropertyDto> create(List<Property> list);
+    List<PropertyDto> create(List<PropertyDto> propertyDtoList);
 
     PropertyDto searchById(long id);
 
     List<PropertyDto> getAll();
 
+    PropertyDto update(PropertyDto propertyDto);
+
     void delete(long propertyId);
 
     void deleteAll();
 
-    PropertyDto updateAddress(long propertyId, String address);
-
-    PropertyDto updateYearOfConstruction(long propertyId, Integer newYearOfConstruction);
-
-    PropertyDto updateTypeOfProperty(long propertyId, TypeOfProperty newType);
-
-    public void printAllProperties();
-
-    public PropertyDto updatePropertyId(long propertyId, Long newΙd);
-
-    public PropertyDto updateOwner(long propertyId, long ownerId);
-
     List<PropertyDto> searchByVatNumber(long vat);
 
-    public PropertyDto searchByPropertyId(long id);
+    PropertyDto searchByPropertyId(long id);
 
-    public List<RepairDto> findRepairsOfProperty(long propertyId);
+    List<RepairDto> findRepairsOfProperty(long propertyId);
 
 }
