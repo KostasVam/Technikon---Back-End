@@ -11,8 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import com.technikon.final_project_ed.model.Repair;
 import com.technikon.final_project_ed.model.Owner;
 import com.technikon.final_project_ed.model.Property;
-import com.technikon.final_project_ed.model.enumeration.StatusOfRepair;
-import com.technikon.final_project_ed.model.enumeration.TypeOfRepair;
 import com.technikon.final_project_ed.service.RepairService;
 import com.technikon.final_project_ed.repository.PropertyRepository;
 import com.technikon.final_project_ed.repository.RepairRepository;
@@ -167,8 +165,12 @@ public class RepairServiceImpl implements RepairService, Serializable {
     public void delete(long id) {
         Optional<Repair> repairFound = repairRepo.findById(id);
         if (repairFound.isPresent()) {
-            repairFound.get().getOwner().getRepairs().remove(repairFound.get());
-            repairFound.get().getProperty().getRepairList().remove(repairFound.get());
+            if (repairFound.get().getOwner() != null) {
+                repairFound.get().getOwner().getRepairs().remove(repairFound.get());
+            }
+            if (repairFound.get().getProperty() != null) {
+                repairFound.get().getProperty().getRepairList().remove(repairFound.get());
+            }
             repairRepo.delete(repairFound.get().getRepairId());
         } else {
             log.info("Repair doesn't exist.");
@@ -188,11 +190,8 @@ public class RepairServiceImpl implements RepairService, Serializable {
                 repairlist
                         .stream()
                         .forEach((Repair r)
-                                -> {
-                            r.getOwner().getRepairs().remove(r);
-                            r.getProperty().getRepairList().remove(r);
-                            delete(r.getRepairId());
-                        });
+                                -> delete(r.getRepairId())
+                        );
             } else {
                 log.info("Database hasn't any repairs.");
             }
