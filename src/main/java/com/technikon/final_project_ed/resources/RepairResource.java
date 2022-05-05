@@ -39,12 +39,6 @@ public class RepairResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed("ADMIN")
     public Response saveRepair(RepairDto repairDto) {
-        if (repairService == null) {
-            log.info("null service");
-        }
-        if (repairDto == null) {
-            log.info("null propertyDto");
-        }
         return Response.ok().entity(repairService.create(repairDto)).build();
     }
 
