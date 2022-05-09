@@ -44,31 +44,35 @@ public class RepairResource {
     }
 
     @POST
+    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed("ADMIN")
+//    @RolesAllowed("ADMIN")
     public Response saveRepair(RepairDto repairDto) {
         return Response.ok().entity(repairService.create(repairDto)).build();
     }
 
     @PUT
+    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed("ADMIN")
+//    @RolesAllowed("ADMIN")
     public Response updateRepair(RepairDto repairDto) {
         return Response.ok().entity(repairService.update(repairDto)).build();
     }
 
     @Path("/{id}")
     @DELETE
+    @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed("ADMIN")
+//    @RolesAllowed("ADMIN")
     public void deleteProperty(@PathParam("id") long id) {
         repairService.delete(id);
     }
 
     @DELETE
-    @RolesAllowed("ADMIN")
+    @PermitAll
+//    @RolesAllowed("ADMIN")
     public void deleteAll() {
         repairService.deleteAll();
     }
