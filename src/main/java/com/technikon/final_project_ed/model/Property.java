@@ -22,11 +22,11 @@ public class Property implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "propertyID", nullable = false, length = 20, unique = true)
-    private Long propertyID;
+    private String propertyID;
     @Column(name = "Address", nullable = false, length = 45)
     private String address;
     @Column(name = "Year_Of_Construction", nullable = false, length = 4)
-    private Integer yearOfConstruction;
+    private String yearOfConstruction;
     @Column(name = "Type_Of_Property")
     @Enumerated(value = EnumType.STRING)
     private TypeOfProperty typeOfProperty;
@@ -34,10 +34,10 @@ public class Property implements Serializable {
     @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "OwnerId", referencedColumnName = "id")
     private Owner owner;
-    @OneToMany(mappedBy = "property", targetEntity = Repair.class)//, fetch = FetchType.LAZY , cascade = CascadeType.ALL
+    @OneToMany(mappedBy = "property", targetEntity = Repair.class, fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})//, fetch = FetchType.LAZY , cascade = CascadeType.ALL
     private List<Repair> repairList;
 
-    public Property(Long propertyID, String address, Integer yearOfConstruction, Owner owner, TypeOfProperty typeOfProperty, List<Repair> repairList) {
+    public Property(String propertyID, String address, String yearOfConstruction, Owner owner, TypeOfProperty typeOfProperty, List<Repair> repairList) {
         this.propertyID = propertyID;
         this.address = address;
         this.yearOfConstruction = yearOfConstruction;
@@ -59,9 +59,9 @@ public class Property implements Serializable {
     public static class Builder {
 
         private Long id;
-        private long propertyID;
+        private String propertyID;
         private String address;
-        private int yearOfConstruction;
+        private String yearOfConstruction;
         private Owner owner;
         private TypeOfProperty typeOfProperty;
         private List<Repair> repairList;
@@ -74,7 +74,7 @@ public class Property implements Serializable {
             return this;
         }
 
-        public Builder setPropertyId(long propertyID) {
+        public Builder setPropertyId(String propertyID) {
             this.propertyID = propertyID;
             return this;
         }
@@ -84,7 +84,7 @@ public class Property implements Serializable {
             return this;
         }
 
-        public Builder setYearOfConstruction(int yearOfConstruction) {
+        public Builder setYearOfConstruction(String yearOfConstruction) {
             this.yearOfConstruction = yearOfConstruction;
             return this;
         }
