@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class OwnerDto {
 
     private Long ownerId;
-    private Long vat;
+    private String vat;
     private String name;
     private String surname;
     private String address;
