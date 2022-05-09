@@ -31,7 +31,7 @@ public class Property implements Serializable {
     @Enumerated(value = EnumType.STRING)
     private TypeOfProperty typeOfProperty;
 
-    @ManyToOne//(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE)//(fetch = FetchType.LAZY)
     @JoinColumn(name = "OwnerId", referencedColumnName = "id")
     private Owner owner;
     @OneToMany(mappedBy = "property", targetEntity = Repair.class, fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})//, fetch = FetchType.LAZY , cascade = CascadeType.ALL

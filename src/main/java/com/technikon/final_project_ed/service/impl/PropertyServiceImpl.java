@@ -253,6 +253,10 @@ public class PropertyServiceImpl implements PropertyService {
                 Optional<Owner> ownerFound = ownerRepo.findByVat(vat);
                 if (ownerFound.isPresent()) {
                     log.info("Owner was found");
+                    if (propertyFound.get().getOwner() != null) {
+                        propertyFound.get().getOwner().getProperties().remove(propertyFound.get());
+                        ownerRepo.update(propertyFound.get().getOwner().getOwnerId(), propertyFound.get().getOwner());
+                    }
                     propertyFound.get().setOwner(ownerFound.get());
                     return new PropertyDto(propertyRepo.update(propertyFound.get().getId(), propertyFound.get()).get());
                 } else {

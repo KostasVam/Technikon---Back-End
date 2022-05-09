@@ -246,6 +246,10 @@ public class RepairServiceImpl implements RepairService, Serializable {
             Optional<Repair> repairFound = repairRepo.findById(id);
             Optional<Property> propertyFound = propertyRepo.findById(propertyId);
             if (repairFound.isPresent() && propertyFound.isPresent()) {
+                if (repairFound.get().getProperty() != null) {
+                    repairFound.get().getProperty().getRepairList().remove(repairFound.get());
+                    propertyRepo.update(repairFound.get().getProperty().getId(), repairFound.get().getProperty());
+                }
                 repairFound.get().setProperty(propertyFound.get());
                 repairRepo.update(id, repairFound.get());
                 return new RepairDto(repairFound.get());

@@ -39,12 +39,9 @@ public class Repair implements Serializable {
     @Enumerated(value = EnumType.STRING)
     private StatusOfRepair statusOfRepair;
 
-    @ManyToOne//(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE)//(fetch = FetchType.LAZY)
     @JoinColumn(name = "property", referencedColumnName = "id")
     private Property property;
-//    @ManyToOne//(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "owner", referencedColumnName = "id")//ownerId????
-//    private Owner owner;
 
     public Repair(Date repairDate, String shortDescription, BigDecimal cost, String detailedDescription, Property propertiesId, Owner owner, TypeOfRepair typeOfRepair, StatusOfRepair statusOfRepair) {
         this.repairDate = repairDate;
@@ -52,7 +49,6 @@ public class Repair implements Serializable {
         this.cost = cost;
         this.detailedDescription = detailedDescription;
         this.property = propertiesId;
-//        this.owner = owner;
         this.typeOfRepair = typeOfRepair;
         this.statusOfRepair = statusOfRepair;
     }
@@ -62,7 +58,6 @@ public class Repair implements Serializable {
         this.repairDate = builder.repairDate;
         this.statusOfRepair = builder.statusOfRepair;
         this.typeOfRepair = builder.typeOfRepair;
-//        this.owner = builder.owner;
         this.property = builder.propertiesId;
         this.detailedDescription = builder.detailedDescription;
         this.cost = builder.cost;
@@ -77,7 +72,6 @@ public class Repair implements Serializable {
         private BigDecimal cost;
         private String detailedDescription;
         private Property propertiesId;
-//        private Owner owner;
         private TypeOfRepair typeOfRepair;
         private StatusOfRepair statusOfRepair;
 
@@ -124,10 +118,6 @@ public class Repair implements Serializable {
             return this;
         }
 
-//        public Builder setOwner(Owner owner) {
-//            this.owner = owner;
-//            return this;
-//        }
         public Repair build() {
             return new Repair(this);
         }

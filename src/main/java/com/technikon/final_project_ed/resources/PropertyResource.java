@@ -26,12 +26,20 @@ public class PropertyResource {
         return Response.ok().entity(propertyService.getAll()).build();
     }
 
-    @Path("/{propertyId}")
+    @Path("/propertyId/{propertyId}")
     @PermitAll
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPropertyByPropertyId(@PathParam("propertyId") String propertyId) {
         return Response.ok().entity(propertyService.searchByPropertyId(propertyId)).build();
+    }
+
+    @Path("/{id}")
+    @PermitAll
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPropertyById(@PathParam("id") Long id) {
+        return Response.ok().entity(propertyService.searchById(id)).build();
     }
 
     @Path("/{id}/owner")

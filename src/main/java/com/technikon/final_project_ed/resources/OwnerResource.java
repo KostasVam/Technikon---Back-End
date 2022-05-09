@@ -30,12 +30,20 @@ public class OwnerResource {
         return Response.ok().entity(ownerService.getAll()).build();
     }
 
-    @Path("/{vat}")
+    @Path("/vat/{vat}")
     @PermitAll
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOwnerByVat(@PathParam("vat") String ownerVat) {
         return Response.ok().entity(ownerService.searchByVat(ownerVat)).build();
+    }
+
+    @Path("/{id}")
+    @PermitAll
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOwnerById(@PathParam("id") Long id) {
+        return Response.ok().entity(ownerService.searchById(id)).build();
     }
 
     @Path("/{vat}/properties")

@@ -47,8 +47,6 @@ public class Owner implements Serializable {
     @OneToMany(mappedBy = "owner", targetEntity = Property.class, fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})//, fetch = FetchType.EAGER, cascade = CascadeType.ALL
     private List<Property> properties;
 
-//    @OneToMany(mappedBy = "owner", targetEntity = Repair.class)//, fetch = FetchType.LAZY, cascade = CascadeType.ALL
-//    private List<Repair> repairs;
     public Owner(String vat, String name, String surname, String address, String phoneNumber, String email, String username, String password, List<Property> properties, List<Repair> repairs) {
         this.vat = vat;
         this.name = name;
@@ -59,7 +57,6 @@ public class Owner implements Serializable {
         this.username = username;
         this.password = password;
         this.properties = properties;
-//        this.repairs = repairs;
     }
 
     private Owner(Builder builder) {
@@ -73,7 +70,6 @@ public class Owner implements Serializable {
         this.username = builder.username;
         this.password = builder.password;
         this.properties = builder.properties;
-//        this.repairs = builder.repairs;
     }
 
     public static class Builder {
@@ -88,7 +84,6 @@ public class Owner implements Serializable {
         private String username;
         private String password;
         private List<Property> properties;
-//        private List<Repair> repairs;
 
         public Builder() {
         }
@@ -143,10 +138,6 @@ public class Owner implements Serializable {
             return this;
         }
 
-//        public Builder setRepairs(List<Repair> repairs) {
-//            this.repairs = repairs;
-//            return this;
-//        }
         public Owner build() {
             return new Owner(this);
         }
