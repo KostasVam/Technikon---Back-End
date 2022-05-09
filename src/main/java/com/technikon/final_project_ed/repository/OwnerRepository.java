@@ -14,5 +14,5 @@ public interface OwnerRepository extends CRUDRepository<Owner> {
 
     Optional<Owner> findByEmail(String email);
 
-    Optional<Owner> findByVat(long vat);
+    Optional<Owner> findByVat(String vat);
 }

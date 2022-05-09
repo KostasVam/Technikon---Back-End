@@ -2,6 +2,7 @@ package com.technikon.final_project_ed.resources;
 
 import com.technikon.final_project_ed.dto.OwnerDto;
 import com.technikon.final_project_ed.service.OwnerService;
+import com.technikon.final_project_ed.service.PropertyService;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 
@@ -19,8 +20,11 @@ public class OwnerResource {
 
     @Inject
     private OwnerService ownerService;
+    @Inject
+    private PropertyService propertyService;
 
     @GET
+    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAll() {
         return Response.ok().entity(ownerService.getAll()).build();
@@ -30,15 +34,32 @@ public class OwnerResource {
     @PermitAll
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getOwnerByVat(@PathParam("vat") long ownerVat) {
+    public Response getOwnerByVat(@PathParam("vat") String ownerVat) {
         return Response.ok().entity(ownerService.searchByVat(ownerVat)).build();
+    }
+
+    @Path("/{vat}/properties")
+    @PermitAll
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPropertiesByVat(@PathParam("vat") String ownerVat) {
+        return Response.ok().entity(propertyService.searchByVatNumber(ownerVat)).build();
+    }
+
+    @Path("/{vat}/repairs")
+    @PermitAll
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRepairsByVat(@PathParam("vat") String ownerVat) {
+        return Response.ok().entity(ownerService.searchOwnersRepairs(ownerVat)).build();
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed("ADMIN")
-    public Response saveEmployee(OwnerDto ownerDto) {
+//    @RolesAllowed("ADMIN")
+    @PermitAll
+    public Response saveOwner(OwnerDto ownerDto) {
         log.info("vat: {}, email: {}", ownerDto.getVat(), ownerDto.getEmail());
         return Response.ok().entity(ownerService.create(ownerDto)).build();
     }
@@ -46,21 +67,24 @@ public class OwnerResource {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed("ADMIN")
-    public Response updateProduct(OwnerDto ownerDto) {
+//    @RolesAllowed("ADMIN")
+    @PermitAll
+    public Response updateOwner(OwnerDto ownerDto) {
         return Response.ok().entity(ownerService.update(ownerDto)).build();
     }
 
     @Path("/{id}")
     @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed("ADMIN")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @RolesAllowed("ADMIN")
+    @PermitAll
     public void deleteOwner(@PathParam("id") long id) {
         ownerService.delete(id);
     }
 
     @DELETE
-    @RolesAllowed("ADMIN")
+//    @RolesAllowed("ADMIN")
+    @PermitAll
     public void deleteAll() {
         ownerService.deleteAll();
     }

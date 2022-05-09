@@ -34,6 +34,15 @@ public class RepairResource {
         return Response.ok().entity(repairService.searchById(id)).build();
     }
 
+    @PUT
+    @Path("/{repairId}/{propertyId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
+//    @RolesAllowed("ADMIN")
+    public Response updateRepairProperty(@PathParam("repairId") long repairId, @PathParam("propertyId") long propertyId) {
+        return Response.ok().entity(repairService.updatePropertiesId(repairId, propertyId)).build();
+    }
+
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)

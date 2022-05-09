@@ -73,7 +73,8 @@ public abstract class CRUDRepositoryImpl<T> implements CRUDRepository<T>, Serial
                 return Optional.empty();
             }
             copyValues(t0, t);
-            em.persist(t0);
+//            em.persist(t0);
+            em.persist(em.contains(t0) ? t0 : em.merge(t0));
             userTransaction.commit();
             return Optional.of(t0);
         } catch (Exception e) {

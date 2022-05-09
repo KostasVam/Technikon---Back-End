@@ -45,13 +45,12 @@ public class RepairServiceImpl implements RepairService, Serializable {
      * @param repair
      * @return boolean
      */
-    private boolean isRepairValid(Repair repair) {
-        boolean ownerValid = isOwnerValid(repair.getOwner().getVat());
-        boolean propertyOwned = isPropertyValid(repair.getProperty(), repair.getOwner());
-        return ownerValid && propertyOwned;
-
-    }
-
+//    private boolean isRepairValid(Repair repair) {
+//        boolean ownerValid = isOwnerValid(repair.getOwner().getVat());
+//        boolean propertyOwned = isPropertyValid(repair.getProperty(), repair.getOwner());
+//        return ownerValid && propertyOwned;
+//
+//    }
     /**
      * isOwnerValid checks if the given owner's vat and email already exist in
      * the database.If both weren't found it return true otherwise it returns
@@ -60,7 +59,7 @@ public class RepairServiceImpl implements RepairService, Serializable {
      * @param vat
      * @return boolean
      */
-    private boolean isOwnerValid(long vat) {
+    private boolean isOwnerValid(String vat) {
         return ownerRepo.findByVat(vat).isPresent();
     }
 
@@ -75,7 +74,8 @@ public class RepairServiceImpl implements RepairService, Serializable {
      */
     private boolean isPropertyValid(Property property, Owner owner) {
         for (Property propertyOwner : owner.getProperties()) {
-            if (propertyOwner.getId() == property.getId()) {
+            if (propertyOwner.getId()
+                    == property.getId()) {
                 return true;
             }
         }
@@ -165,13 +165,10 @@ public class RepairServiceImpl implements RepairService, Serializable {
     public void delete(long id) {
         Optional<Repair> repairFound = repairRepo.findById(id);
         if (repairFound.isPresent()) {
-            if (repairFound.get().getOwner() != null) {
-                repairFound.get().getOwner().getRepairs().remove(repairFound.get());
-            }
             if (repairFound.get().getProperty() != null) {
                 repairFound.get().getProperty().getRepairList().remove(repairFound.get());
             }
-            repairRepo.delete(repairFound.get().getRepairId());
+            repairRepo.delete(id);
         } else {
             log.info("Repair doesn't exist.");
         }
@@ -245,19 +242,20 @@ public class RepairServiceImpl implements RepairService, Serializable {
      */
     @Override
     public RepairDto updatePropertiesId(long id, long propertyId) {
-        Optional<Repair> repairFound = repairRepo.findById(id);
-        Optional<Property> propertyFound = propertyRepo.findById(propertyId);
-        if (repairFound.isPresent() && propertyFound.isPresent()) {
-            if (isPropertyValid(repairFound.get().getProperty(), propertyFound.get().getOwner())) {
+        try {
+            Optional<Repair> repairFound = repairRepo.findById(id);
+            Optional<Property> propertyFound = propertyRepo.findById(propertyId);
+            if (repairFound.isPresent() && propertyFound.isPresent()) {
                 repairFound.get().setProperty(propertyFound.get());
-                repairRepo.save(repairFound.get());
+                repairRepo.update(id, repairFound.get());
                 return new RepairDto(repairFound.get());
             } else {
-                log.info("Update of repair with id {} failed. New property id doesn't belong to same owner.", repairFound.get().getRepairId());
+                log.info("Update of repair with id {} failed. Invalid repair or property id.");
                 return getDummyRepairDto();
             }
-        } else {
-            log.info("Update of repair with id {} failed. Invalid repair or property id.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info(e.toString());
             return getDummyRepairDto();
         }
     }
@@ -302,7 +300,7 @@ public class RepairServiceImpl implements RepairService, Serializable {
      * @return repair
      */
     @Override
-    public List<RepairDto> findRepairsByDateRange(Date startDate, Date endDate) throws IllegalArgumentException {
+    public List<RepairDto> findRepairsByDateRange(Date startDate, Date endDate) {
         DateFormatterUtil dfu = new DateFormatterUtil();
         String startDateString = dfu.getFormattedDate(startDate);
         String endDateString = dfu.getFormattedDate(endDate);

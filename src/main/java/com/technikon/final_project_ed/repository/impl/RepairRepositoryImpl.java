@@ -37,7 +37,6 @@ public class RepairRepositoryImpl extends CRUDRepositoryImpl<Repair> implements 
     public void copyValues(Repair tTarget, Repair tSource) {
         tTarget.setCost(tSource.getCost());
         tTarget.setDetailedDescription(tSource.getDetailedDescription());
-        tTarget.setOwner(tSource.getOwner());
         tTarget.setProperty(tSource.getProperty());
         tTarget.setRepairDate(tSource.getRepairDate());
         tTarget.setShortDescription(tSource.getShortDescription());

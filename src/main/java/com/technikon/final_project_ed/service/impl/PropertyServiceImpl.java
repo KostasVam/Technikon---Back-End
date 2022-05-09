@@ -1,5 +1,6 @@
 package com.technikon.final_project_ed.service.impl;
 
+import com.technikon.final_project_ed.dto.OwnerDto;
 import com.technikon.final_project_ed.dto.PropertyDto;
 import com.technikon.final_project_ed.dto.RepairDto;
 import com.technikon.final_project_ed.model.Owner;
@@ -32,7 +33,7 @@ public class PropertyServiceImpl implements PropertyService {
     @Inject
     private RepairRepository repairRepo;
 
-    private boolean isPropertyValid(long propertyId) {
+    private boolean isPropertyValid(String propertyId) {
         boolean uniqueId = (propertyRepo.findByPropertyId(propertyId).isEmpty());
         if (!uniqueId) {
             log.info("Not unique property id");
@@ -118,7 +119,7 @@ public class PropertyServiceImpl implements PropertyService {
      * @return
      */
     @Override
-    public PropertyDto searchByPropertyId(long propertyId) {
+    public PropertyDto searchByPropertyId(String propertyId) {
         Optional<Property> propertyFound = propertyRepo.findByPropertyId(propertyId);
         if (propertyFound.isPresent()) {
             return new PropertyDto(propertyFound.get());
@@ -135,7 +136,7 @@ public class PropertyServiceImpl implements PropertyService {
      * @return
      */
     @Override
-    public List<PropertyDto> searchByVatNumber(long vat) {
+    public List<PropertyDto> searchByVatNumber(String vat) {
         List<PropertyDto> propertyDtoList = new ArrayList<>();
         Optional<Owner> ownerFound = ownerRepo.findByVat(vat);
         if (ownerFound.isPresent()) {
@@ -151,6 +152,36 @@ public class PropertyServiceImpl implements PropertyService {
             log.info("The owner with vat: {} doesn't exist", vat);
         }
         return propertyDtoList;
+    }
+
+    /**
+     * searchOwner returns property's owner
+     *
+     * @param propertyId
+     * @return
+     */
+    @Override
+    public OwnerDto searchOwner(long propertyId) {
+        try {
+            Optional<Property> propertyFound = propertyRepo.findById(propertyId);
+            if (propertyFound.isPresent()) {
+                log.info("Property was found");
+                Optional<Owner> ownerFound = ownerRepo.findByVat(propertyFound.get().getOwner().getVat());
+                if (ownerFound.isPresent()) {
+                    log.info("Owner was found");
+                    return new OwnerDto(ownerFound.get());
+                } else {
+                    log.info("Owner wasn't found");
+                    return null;
+                }
+            } else {
+                log.info("Property wasn't found");
+                return null;
+            }
+        } catch (NullPointerException ex) {
+            log.info("Invalid null property.");
+            return null;
+        }
     }
 
     /**
@@ -187,7 +218,7 @@ public class PropertyServiceImpl implements PropertyService {
                     log.info("Address was updated");
                 }
                 if (propertyDto.getYearOfConstruction() != null
-                        && propertyDto.getYearOfConstruction() <= Calendar.getInstance().get(Calendar.YEAR)) {
+                        && Integer.parseInt(propertyDto.getYearOfConstruction()) <= Calendar.getInstance().get(Calendar.YEAR)) {
                     propertyFound.get().setYearOfConstruction(propertyDto.getYearOfConstruction());
                     log.info("Year Of Construction was updated");
                 }
@@ -195,16 +226,6 @@ public class PropertyServiceImpl implements PropertyService {
                     propertyFound.get().setTypeOfProperty(propertyDto.getTypeOfProperty());
                     log.info("Type Of Property was updated");
                 }
-//                if (propertyDto.getOwnerVat() != null) {
-//                    Optional<Owner> ownerFound = ownerRepo.findByVat(propertyDto.getOwnerVat());
-//                    if (ownerFound.isPresent()) {
-//                        propertyFound.get().setOwnerVat(propertyDto.getOwnerVat());
-//                        propertyFound.get().setOwner(ownerFound.get());
-//                    } else {
-//                        log.info("Owner's vat wasn't found");
-//                    }
-//                    log.info("Owner was updated");
-//                }
                 return new PropertyDto(propertyRepo.update(propertyFound.get().getId(), propertyFound.get()).get());
             } else {
                 log.info("Property wasn't found");
@@ -217,6 +238,39 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     /**
+     * updateOwner updates the owner of the property given as parameter
+     *
+     * @param propertyId
+     * @param vat
+     * @return
+     */
+    @Override
+    public PropertyDto updateOwner(long propertyId, String vat) {
+        try {
+            Optional<Property> propertyFound = propertyRepo.findById(propertyId);
+            if (propertyFound.isPresent()) {
+                log.info("Property was found");
+                Optional<Owner> ownerFound = ownerRepo.findByVat(vat);
+                if (ownerFound.isPresent()) {
+                    log.info("Owner was found");
+                    propertyFound.get().setOwner(ownerFound.get());
+                    return new PropertyDto(propertyRepo.update(propertyFound.get().getId(), propertyFound.get()).get());
+                } else {
+                    log.info("Owner wasn't found");
+                    return getDummyPropertyDto();
+                }
+            } else {
+                log.info("Property wasn't found");
+                return getDummyPropertyDto();
+            }
+        } catch (NullPointerException ex) {
+            log.info("Invalid null property.");
+            return getDummyPropertyDto();
+        }
+
+    }
+
+    /**
      * delete: checks if the given property corresponds to an existing property
      * in the database.If that property is found then delete property
      *
@@ -226,12 +280,17 @@ public class PropertyServiceImpl implements PropertyService {
     public void delete(long propertyId) {
         Optional<Property> propertyFound = propertyRepo.findById(propertyId);
         if (propertyFound.isPresent()) {
+            if (propertyFound.get().getOwner() != null) {
+                propertyFound.get().getOwner().getProperties().remove(propertyFound.get());
+            }
             List<Repair> repairList = propertyRepo.findRepairByProperty(propertyFound.get());
-            repairList.stream().forEach(r -> repairRepo.delete(r.getRepairId()));
-            propertyRepo.delete(propertyFound.get().getId());
+            if (!repairList.isEmpty()) {
+                repairList.stream().forEach(r -> repairRepo.delete(r.getRepairId()));
+            }
+            propertyRepo.delete(propertyId);
 
         } else {
-            log.info("Owner doesn't exist.");
+            log.info("Property doesn't exist.");
         }
 
     }

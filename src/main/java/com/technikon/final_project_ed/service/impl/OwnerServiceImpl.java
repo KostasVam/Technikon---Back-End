@@ -1,10 +1,13 @@
 package com.technikon.final_project_ed.service.impl;
 
 import com.technikon.final_project_ed.dto.OwnerDto;
+import com.technikon.final_project_ed.dto.RepairDto;
 import com.technikon.final_project_ed.model.Owner;
 import com.technikon.final_project_ed.model.Property;
+import com.technikon.final_project_ed.model.Repair;
 import com.technikon.final_project_ed.repository.OwnerRepository;
 import com.technikon.final_project_ed.repository.PropertyRepository;
+import com.technikon.final_project_ed.repository.RepairRepository;
 import com.technikon.final_project_ed.service.OwnerService;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,8 @@ public class OwnerServiceImpl implements OwnerService {
     private OwnerRepository ownerRepo;
     @Inject
     private PropertyRepository propertyRepo;
+    @Inject
+    private RepairRepository repairRepo;
 
     /**
      * create checks if the given owner already exists in the database.If that
@@ -59,7 +64,7 @@ public class OwnerServiceImpl implements OwnerService {
      * @param email
      * @return boolean
      */
-    private boolean isOwnerValid(long vat, String email) {
+    private boolean isOwnerValid(String vat, String email) {
         return isVatUnique(vat) && isEmailUnique(email);
     }
 
@@ -71,7 +76,7 @@ public class OwnerServiceImpl implements OwnerService {
      * @param vat
      * @return boolean
      */
-    private boolean isVatUnique(long vat) {
+    private boolean isVatUnique(String vat) {
         boolean uniqueVat = !ownerRepo.findByVat(vat).isPresent();
         if (!uniqueVat) {
             log.info("Not unique vat");
@@ -156,13 +161,48 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public OwnerDto searchByVat(long vat) {
+    public OwnerDto searchByVat(String vat) {
         Optional<Owner> ownerFound = ownerRepo.findByVat(vat);
         if (ownerFound.isPresent()) {
             return new OwnerDto(ownerFound.get());
         }
         log.info("Owner with vat {} wasn't found.", vat);
         return getDummyOwnerDto();
+    }
+
+    /**
+     * searchOwnersRepairs returns all the repairs that belong to the owner with
+     * the given vat
+     *
+     * @param vat
+     * @return
+     */
+    @Override
+    public List<RepairDto> searchOwnersRepairs(String vat) {
+        try {
+            Optional<Owner> ownerFound = ownerRepo.findByVat(vat);
+            List<RepairDto> repairsFound = new ArrayList<>();
+            if (ownerFound.isPresent()) {
+                List<Property> propertiesFound = propertyRepo.findByVat(ownerFound.get());
+                if (!propertiesFound.isEmpty()) {
+                    for (Property property : propertiesFound) {
+                        for (Repair repair : propertyRepo.findRepairByProperty(property)) {
+                            repairsFound.add(new RepairDto(repair));
+                        }
+                    }
+                    return repairsFound;
+                } else {
+                    log.info("Owner with vat: {} has no properties.", vat);
+                    return null;
+                }
+            } else {
+                log.info("Owner with vat: {} doesn't exist.", vat);
+                return null;
+            }
+        } catch (Exception e) {
+            log.error("Invalid null owner.");
+            return null;
+        }
     }
 
     /**
@@ -247,10 +287,9 @@ public class OwnerServiceImpl implements OwnerService {
         if (ownerFound.isPresent()) {
             List<Property> propertyList = propertyRepo.findByVat(ownerFound.get());
             if (!propertyList.isEmpty()) {
-                propertyList.stream()
-                        .forEach((Property p)
-                                -> propertyRepo.delete(p.getId())
-                        );
+                for (Property property : propertyList) {
+                    propertyRepo.delete(property.getId());
+                }
             }
             ownerRepo.delete(id);
 
@@ -271,8 +310,10 @@ public class OwnerServiceImpl implements OwnerService {
         try {
             List<Owner> allOwnresList = ownerRepo.findAll();
             if (!allOwnresList.isEmpty()) {
-//            repairRepo.deleteAll(repairRepo.readAll());
-//            propertyRepo.deleteAll(propertyRepo.readAll());
+//                repairRepo.findAll().stream()
+//                        .forEach(r -> repairRepo.delete(r.getRepairId()));
+//                propertyRepo.findAll().stream()
+//                        .forEach(p -> propertyRepo.delete(p.getId()));
                 allOwnresList.stream()
                         .forEach(o -> ownerRepo.delete(o.getOwnerId()
                 ));

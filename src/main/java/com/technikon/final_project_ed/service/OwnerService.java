@@ -1,6 +1,7 @@
 package com.technikon.final_project_ed.service;
 
 import com.technikon.final_project_ed.dto.OwnerDto;
+import com.technikon.final_project_ed.dto.RepairDto;
 import java.util.List;
 
 /**
@@ -24,9 +25,11 @@ public interface OwnerService {
 
     void deleteAll();
 
-    OwnerDto searchByVat(long vat);
+    OwnerDto searchByVat(String vat);
 
     OwnerDto searchByEmail(String email);
+
+    List<RepairDto> searchOwnersRepairs(String vat);
 
     OwnerDto update(OwnerDto ownerDto);
 

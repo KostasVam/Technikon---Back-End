@@ -30,42 +30,65 @@ public class PropertyResource {
     @PermitAll
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPropertyByPropertyId(@PathParam("propertyId") long propertyId) {
+    public Response getPropertyByPropertyId(@PathParam("propertyId") String propertyId) {
         return Response.ok().entity(propertyService.searchByPropertyId(propertyId)).build();
+    }
+
+    @Path("/{id}/owner")
+    @PermitAll
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPropertyOwner(@PathParam("id") long id) {
+        return Response.ok().entity(propertyService.searchOwner(id)).build();
+    }
+
+    @Path("/{id}/repairs")
+    @PermitAll
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPropertyRepairs(@PathParam("id") long id) {
+        return Response.ok().entity(propertyService.findRepairsOfProperty(id)).build();
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed("ADMIN")
+    @PermitAll
+//    @RolesAllowed("ADMIN")
     public Response saveProperty(PropertyDto propertyDto) {
-        if (propertyService == null) {
-            log.info("null service");
-        }
-        if (propertyDto == null) {
-            log.info("null propertyDto");
-        }
         return Response.ok().entity(propertyService.create(propertyDto)).build();
     }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed("ADMIN")
+    @PermitAll
+//    @RolesAllowed("ADMIN")
     public Response updateProperty(PropertyDto propertyDto) {
         return Response.ok().entity(propertyService.update(propertyDto)).build();
+    }
+
+    @PUT
+    @Path("/{id}/{vat}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
+//    @RolesAllowed("ADMIN")
+    public Response updatePropertyOwner(@PathParam("id") long id, @PathParam("vat") String vat) {
+        return Response.ok().entity(propertyService.updateOwner(id, vat)).build();
     }
 
     @Path("/{id}")
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed("ADMIN")
+    @PermitAll
+//    @RolesAllowed("ADMIN")
     public void deleteProperty(@PathParam("id") long id) {
         propertyService.delete(id);
     }
 
     @DELETE
-    @RolesAllowed("ADMIN")
+    @PermitAll
+//    @RolesAllowed("ADMIN")
     public void deleteAll() {
         propertyService.deleteAll();
     }

@@ -1,5 +1,6 @@
 package com.technikon.final_project_ed.service;
 
+import com.technikon.final_project_ed.dto.OwnerDto;
 import com.technikon.final_project_ed.dto.PropertyDto;
 import com.technikon.final_project_ed.dto.RepairDto;
 import com.technikon.final_project_ed.model.enumeration.TypeOfProperty;
@@ -21,18 +22,22 @@ public interface PropertyService {
 
     PropertyDto searchById(long id);
 
+    OwnerDto searchOwner(long id);
+
     List<PropertyDto> getAll();
 
     PropertyDto update(PropertyDto propertyDto);
 
-    void delete(long propertyId);
+    public PropertyDto updateOwner(long id, String vat);
+
+    void delete(long id);
 
     void deleteAll();
 
-    List<PropertyDto> searchByVatNumber(long vat);
+    List<PropertyDto> searchByVatNumber(String vat);
 
-    PropertyDto searchByPropertyId(long id);
+    PropertyDto searchByPropertyId(String id);
 
-    List<RepairDto> findRepairsOfProperty(long propertyId);
+    List<RepairDto> findRepairsOfProperty(long id);
 
 }

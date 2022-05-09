@@ -41,14 +41,13 @@ public class OwnerRepositoryImpl extends CRUDRepositoryImpl<Owner> implements Ow
         tTarget.setPassword(tSource.getPassword());
         tTarget.setPhoneNumber(tSource.getPhoneNumber());
         tTarget.setProperties(tSource.getProperties());
-        tTarget.setRepairs(tSource.getRepairs());
         tTarget.setSurname(tSource.getSurname());
         tTarget.setUsername(tSource.getUsername());
         tTarget.setVat(tSource.getVat());
     }
 
     @Override
-    public Optional<Owner> findByVat(long vat) {
+    public Optional<Owner> findByVat(String vat) {
         try {
             Query query = em.createQuery("SELECT s FROM Owner s WHERE s.vat = ?1", Owner.class);
             Owner owner = (Owner) query.setParameter(1, vat).getSingleResult();

@@ -52,7 +52,7 @@ public class PropertyRepositoryImpl extends CRUDRepositoryImpl<Property> impleme
      * @return
      */
     @Override
-    public Optional<Property> findByPropertyId(long propertyId) {
+    public Optional<Property> findByPropertyId(String propertyId) {
         try {
             Query query = em.createQuery("SELECT s FROM Property s WHERE s.propertyID = ?1", Property.class);
             Property property = (Property) query.setParameter(1, propertyId).getSingleResult();

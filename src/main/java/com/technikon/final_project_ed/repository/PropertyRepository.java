@@ -19,5 +19,5 @@ public interface PropertyRepository extends CRUDRepository<Property> {
 
     List<Repair> findRepairByProperty(Property property);
 
-    Optional<Property> findByPropertyId(long id);
+    Optional<Property> findByPropertyId(String id);
 }
