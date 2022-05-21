@@ -5,7 +5,7 @@
     <artifactId>Final_Project_ED</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>Final_Project_ED-1.0-SNAPSHOT</name>
+    <name>Technikon_BackEnd</name>
     
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
